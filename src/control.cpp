@@ -12,15 +12,28 @@
 #include <SDL2/SDL.h>
 
 //size of window in pixels
-int windowXSize = 320;
-int windowYSize = 240;
+int windowXSize = 300;
+int windowYSize = 200;
 
 SDL_Renderer* renderer;
 SDL_Color color = {0,0,255,SDL_ALPHA_OPAQUE}; //default color blue
 
+const char* infoMessage = "\ton the keyboard:\nW, A, S, D - driving\n\
+F3 - camera on\n\
+F4 - camera off\n\
+arrows UP, DOWN - change speed\n\
+spacebar - halt\n\n\
+\tin the GUI:\n\
+keypad: driving\n\
+plus: increase speed\n\
+minus: decrease speed\n\
+rectangle: camera on\n\
+cross: camera off\
+";
+
 int main(int argc, char *argv[]) {	
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Window* mainWindow = SDL_CreateWindow("Conway's game of life by Jiři Vavřík v3.2.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowXSize, windowYSize, 0); //create window
+	SDL_Window* mainWindow = SDL_CreateWindow("RPi vehicle control", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowXSize, windowYSize, 0); //create window
 	// Check that the window was successfully created
     if (mainWindow == NULL) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Could not create window: %s\n", SDL_GetError());
@@ -64,49 +77,123 @@ int main(int argc, char *argv[]) {
 	if( connect(client_socket, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
     {
        printf("\n Error : Connect Failed \n");
-       //return 1;
+       return 1;
     } 
+
+	SDL_Color color = {0, 0, 255, SDL_ALPHA_OPAQUE};
+	SDL_Rect rect = {0,0,0,0};
+	SDL_SetRenderDrawColor(renderer, 127, 127, 127, SDL_ALPHA_OPAQUE);//background gray color
+	SDL_RenderFillRect(renderer, NULL);
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 	
+	rect.x = 127;
+	rect.y = 10;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
 	
+	rect.x = 127;
+	rect.y = 65;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
 	
+	rect.x = 127;
+	rect.y = 120;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
 	
-	const Uint8 *currentKeyboardState;
-	Uint8 *lastKeyboardState;
+	rect.x = 72;
+	rect.y = 65;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
+	
+	rect.x = 182;
+	rect.y = 65;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
+	
+	rect.x = 5;
+	rect.y = 5;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
+	
+	rect.x = 5;
+	rect.y = 150;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
+	
+	rect.x = 250;
+	rect.y = 5;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
+	
+	rect.x = 250;
+	rect.y = 150;
+	rect.w = 45;
+	rect.h = 45;
+	SDL_RenderFillRect(renderer, &rect);
+	
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+	SDL_RenderDrawLine(renderer, 27, 10, 27, 45);
+	SDL_RenderDrawLine(renderer, 10, 27, 45, 27);
+	SDL_RenderDrawLine(renderer, 10, 173, 45, 173);
+	rect.x = 260;
+	rect.y = 15;
+	rect.w = 25;
+	rect.h = 25;
+	SDL_RenderDrawRect(renderer, &rect);
+	SDL_RenderDrawLine(renderer, 260, 160, 285, 185);
+	SDL_RenderDrawLine(renderer, 260, 185, 285, 160);
+	
+	SDL_RenderPresent(renderer); //update screen
 	
 	bool End = false;
 	SDL_Event* event = new SDL_Event;//structure for handling events
-	
 	while (!End) {//main loop
 		while (SDL_PollEvent(event)) {//read events from queue
 			if (event->type == SDL_QUIT)
 				End = true;	
 			else if (event->type == SDL_KEYDOWN) { //if key is pressed
 				switch (event->key.keysym.sym){ //choose the key
-					case SDLK_F1:		break;
+					case SDLK_F1:		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Help", infoMessage, mainWindow); break;
+					case SDLK_F3:		send(client_socket, "X", 1, 0); break;
+					case SDLK_F4:		send(client_socket, "x", 1, 0); break;
 					case SDLK_q:		End = true; break;
-					case SDLK_UP:		break;
-					case SDLK_DOWN:		break;
-					case SDLK_RIGHT:	break;
-					case SDLK_LEFT:		break;
+					case SDLK_w:		send(client_socket, "F", 1, 0); break;
+					case SDLK_a:		send(client_socket, "R", 1, 0); break;
+					case SDLK_s:		send(client_socket, "B", 1, 0); break;
+					case SDLK_d:		send(client_socket, "L", 1, 0); break;
+					case SDLK_UP:		send(client_socket, "+", 1, 0); break;
+					case SDLK_DOWN:		send(client_socket, "-", 1, 0); break;
 					case SDLK_SPACE:	send(client_socket, "S", 1, 0); break;
 					}
 			} else if(event->type == SDL_KEYUP) {
 				send(client_socket, "S", 1, 0); break;
+			}  else if (event->type == SDL_MOUSEBUTTONDOWN) {//todo: mouse control
+				int x, y = 0;
+				SDL_GetMouseState(&x, &y);
+			} else if (event->type == SDL_MOUSEBUTTONUP) {
+				
 			}
 		}//end of reading event queue
 		
-		
-		
-		
-		
 		if(recv(client_socket, &message, sizeof(message),MSG_DONTWAIT) != -1) {	
 		
-		
 		}
-		
 	}//end of while loop		
-	send(client_socket, "0", 1, 0);
+	send(client_socket, "0", 1, 0);//send disconnect notice
+	SDL_Delay(500);
 	close(client_socket);
-	SDL_Delay(1000);
+	SDL_Delay(500);
 	return 0;
 }

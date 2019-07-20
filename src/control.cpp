@@ -32,7 +32,7 @@ cross: camera off\
 
 int main(int argc, char *argv[]) {	
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_Window* mainWindow = SDL_CreateWindow("RPi vehicle control", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowXSize, windowYSize, 0); //create window
+	SDL_Window* mainWindow = SDL_CreateWindow("Raspberry rover control", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowXSize, windowYSize, 0); //create window
 	// Check that the window was successfully created
     if (mainWindow == NULL) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Could not create window: %s\n", SDL_GetError());

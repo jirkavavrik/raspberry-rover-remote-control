@@ -1,5 +1,5 @@
-# rpi-vehicle-socket-control
+# raspberry-rover-socket-control
 
-control Raspberry Pi vehicle over WiFi using sockets to send commands - desktop app
+control Raspberry rover over WiFi using sockets to send commands - desktop app
 
 ![Screenshot](doc/screenshot.png)

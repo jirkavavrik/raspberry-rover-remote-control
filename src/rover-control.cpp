@@ -60,7 +60,9 @@ int main(int argc, char *argv[]) {
 	client_socket = socket(AF_INET, SOCK_STREAM, 0);
 	
 	if(client_socket < 0) {
-		printf("\n Error : Could not create socket \n");
+		SDL_SetError("failed to create socket\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), mainWindow);
+		printf(SDL_GetError());
         return 1;
 	}
 	
@@ -69,14 +71,18 @@ int main(int argc, char *argv[]) {
 	
 	if(inet_pton(AF_INET, ip_address, &server_address.sin_addr)<=0) //assign address from argv
     {
-        printf("\n inet_pton error occured\n");
+		SDL_SetError("inet_pton error occured\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), mainWindow);
+		printf(SDL_GetError());
         return 1;
     } 
 
 	if( connect(client_socket, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
     {
-       printf("\n Error : Connect Failed \n");
-       return 1;
+		SDL_SetError("connect Failed\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), mainWindow);
+		printf(SDL_GetError());
+        return 1;
     } 
 
 	SDL_Color color = {0, 0, 255, SDL_ALPHA_OPAQUE};
@@ -242,5 +248,6 @@ int main(int argc, char *argv[]) {
 	SDL_Delay(100);
 	close(client_socket);
 	SDL_Delay(100);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "disconnect", "disconnected, now exiting", mainWindow);
 	return 0;
 }

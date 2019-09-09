@@ -4,10 +4,10 @@
 
 CC=g++
 FLAGS=`sdl2-config --cflags --libs`
-EXE=control
+EXE=rover-control
 
-main: control.cpp
-	$(CC) control.cpp $(FLAGS) -o $(EXE)
+main: rover-control.cpp
+	$(CC) rover-control.cpp $(FLAGS) -o $(EXE)
 
 run:
 	./$(EXE)

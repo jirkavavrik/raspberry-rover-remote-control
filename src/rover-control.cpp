@@ -20,7 +20,10 @@ SDL_Color color = {0,0,255,SDL_ALPHA_OPAQUE}; //default color blue
 const char* infoMessage = "\ton the keyboard:\nW, A, S, D - driving\n\
 F3 - camera on\n\
 F4 - camera off\n\
-arrows UP, DOWN - change speed\n\
+\n F5 - front lights off\n\
+F6 - front lights daytime light\n\
+F7 - front lights full on\n\
+\narrows UP, DOWN - change speed\n\
 spacebar - halt\n\n\
 \tin the GUI:\n\
 keypad: driving\n\
@@ -199,6 +202,9 @@ int main(int argc, char *argv[]) {
 					case SDLK_F1:		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Help", infoMessage, mainWindow); break;
 					case SDLK_F3:		send(client_socket, "X", 1, 0); break;
 					case SDLK_F4:		send(client_socket, "x", 1, 0); break;
+					case SDLK_F5:		send(client_socket, "a", 1, 0); break;
+					case SDLK_F6:		send(client_socket, "b", 1, 0); break;
+					case SDLK_F7:		send(client_socket, "c", 1, 0); break;
 					case SDLK_q:		End = true; break;
 					case SDLK_w:		send(client_socket, "F", 1, 0); break;
 					case SDLK_a:		send(client_socket, "L", 1, 0); break;

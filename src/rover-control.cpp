@@ -52,7 +52,18 @@ int main(int argc, char *argv[]) {
 	char ip_address[255];
 	//load IP from the file
 	fp = fopen("ip.txt", "r");
-	fgets(ip_address, 255, (FILE*)fp);
+	if (fp == NULL) {
+		SDL_SetError("Failed to load file ip.txt conrtaining Rover's IP address\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), mainWindow);
+		printf(SDL_GetError());
+		return 1;
+	}
+	if (fgets(ip_address, 255, (FILE*)fp) == NULL ) {
+		SDL_SetError("Error reading from file ip.txt conrtaining Rover's IP address\n");
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), mainWindow);
+		printf(SDL_GetError());
+		return 1;
+	}
 	printf("ip: %s\n", ip_address );
 	fclose(fp);
 	
@@ -61,7 +72,6 @@ int main(int argc, char *argv[]) {
 	char message;
 	
 	client_socket = socket(AF_INET, SOCK_STREAM, 0);
-	
 	if(client_socket < 0) {
 		SDL_SetError("failed to create socket\n");
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", SDL_GetError(), mainWindow);
